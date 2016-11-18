@@ -1,0 +1,12 @@
+{
+  "calibrationFile": "calibration.csv",
+  "inputFile": "input.csv",
+  "dof": 2,
+
+  "controlPolicy": "maximum",
+  "activationThreshold": 0.15,
+  "timeBetweenImpulseMillis": 500.0,
+
+  "travelTimeMillis": 2000.0,
+  "dwellTimeMillis": 500.0
+}
