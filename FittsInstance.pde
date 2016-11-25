@@ -7,20 +7,18 @@ class FittsInstance {
   //  - (0, 0) is the center of the screen
   //  - negative numbers imply left/up
   //  - positive numbers imply right/down
-  private float relativeCenterX;
-  private float relativeCenterY;
+  protected float relativeCenterX;
+  protected float relativeCenterY;
 
   // Specified in the range [0.0, 1.0]
   //  - 0.0 is no height/width
   //  - 1.0 is entire screen height/width
-  private float relativeHeight;
-  private float relativeWidth;
+  protected float relativeHeight;
+  protected float relativeWidth;
 
-  private FittsState currentState;
-  private FittsState previousState;
-  private FittsStatistics statistics;
-
-  private float currentDwellTimeMillis;
+  protected FittsState currentState;
+  protected FittsState previousState;
+  protected FittsStatistics statistics;
 
   public FittsInstance(float relativeHeight, float relativeWidth, float relativeCenterX, float relativeCenterY, float relativeTargetX, float relativeTargetWidth) {
     this.relativeHeight = relativeHeight;
@@ -31,15 +29,11 @@ class FittsInstance {
     currentState = new FittsState(0.0, relativeTargetX, relativeTargetWidth);
     previousState = currentState.clone();
     statistics = new FittsStatistics(relativeTargetX, relativeTargetWidth);
-
-    currentDwellTimeMillis = 0;
   }
 
   public void update(float frameTimeMillis, HashMap<Action, Float> readings) {
     updateState(frameTimeMillis, readings);
     statistics.update(frameTimeMillis, currentState, previousState);
-
-    updateDwellTime(frameTimeMillis);
   }
 
   private void updateState(float frameTimeMillis, HashMap<Action, Float> readings) {
@@ -53,55 +47,79 @@ class FittsInstance {
     currentState.relativeCursorX = newX;
   }
 
-  private void updateDwellTime(float frameTimeMillis) {
-    if (currentState.isCursorInTarget())
-      currentDwellTimeMillis += frameTimeMillis;
-    else
-      currentDwellTimeMillis = 0;
+  public void draw(HashMap<FittsComponent, Color> componentColors) {
+    drawBackground(componentColors);
+    drawFreeTarget(componentColors);
+    drawAcquiredTarget(componentColors);
+    drawCursor(componentColors);
   }
 
-  public void draw(HashMap<FittsComponent, Color> componentColors) {
-    // dynamically calculate locations in pixel-space (allows for resizing)
-    float instanceWidth = relativeWidth*width;
-    float instanceHeight = relativeHeight*height;
-    float instanceCenterX = (width/2) + (relativeCenterX*(width/2));
-    float instanceCenterY = (height/2) + (relativeCenterY*(height/2));
-    float instanceBackgroundCornerRadius = instanceHeight/10;
-    float instanceTargetX = instanceCenterX + currentState.relativeTargetX*(instanceWidth/2);
-    float instanceTargetWidth = currentState.relativeTargetWidth * instanceWidth;
-    float instanceTargetCornerRadius = instanceHeight/10;
-    float instanceCursorX = instanceCenterX + currentState.relativeCursorX*(instanceWidth/2);
-    float instanceCursorWidth = 0.05*instanceWidth;
-    float instanceCursorCornerRadius = instanceHeight/15;
+  protected void drawBackground(HashMap<FittsComponent, Color> componentColors) {
+    // dynamically calculate locations (enables resizes)
+    float absoluteWidth = relativeWidth*width;
+    float absoluteHeight = relativeHeight*height;
+    float centerX = (width/2) + (relativeCenterX*(width/2));
+    float centerY = (height/2) + (relativeCenterY*(height/2));
+    float cornerRadius = absoluteHeight/10;
 
     rectMode(CENTER);
-
-    // draw background
     stroke(componentColors.get(FittsComponent.BACKGROUND).getRGB());
     fill(componentColors.get(FittsComponent.BACKGROUND).getRGB());
-    rect(instanceCenterX, instanceCenterY, instanceWidth, 0.7*instanceHeight, instanceBackgroundCornerRadius);
+    rect(centerX, centerY, absoluteWidth, 0.7*absoluteHeight, cornerRadius);
+  }
 
-    // draw red target
+  protected void drawFreeTarget(HashMap<FittsComponent, Color> componentColors) {
+    // dynamically calculate locations (enables resizes)
+    float absoluteWidth = relativeWidth*width;
+    float absoluteHeight = relativeHeight*height;
+    float centerX = (width/2) + (relativeCenterX*(width/2));
+    float centerY = (height/2) + (relativeCenterY*(height/2));
+    float targetX = centerX + currentState.relativeTargetX*(absoluteWidth/2);
+    float targetWidth = currentState.relativeTargetWidth * absoluteWidth;
+    float cornerRadius = absoluteHeight/10;
+
+    rectMode(CENTER);
     stroke(componentColors.get(FittsComponent.TARGET_FREE).getRGB());
     fill(componentColors.get(FittsComponent.TARGET_FREE).getRGB());
-    rect(instanceTargetX, instanceCenterY, instanceTargetWidth, instanceHeight, instanceTargetCornerRadius);
+    rect(targetX, centerY, targetWidth, absoluteHeight, cornerRadius);
+  }
 
-    // draw green target (when appropriate)
+  protected void drawAcquiredTarget(HashMap<FittsComponent, Color> componentColors) {
     if (currentState.isCursorInTarget()) {
+      // dynamically calculate locations (enables resizes)
+      float absoluteWidth = relativeWidth*width;
+      float absoluteHeight = relativeHeight*height;
+      float centerX = (width/2) + (relativeCenterX*(width/2));
+      float centerY = (height/2) + (relativeCenterY*(height/2));
+      float targetX = centerX + currentState.relativeTargetX*(absoluteWidth/2);
+      float targetWidth = currentState.relativeTargetWidth * absoluteWidth;
+      float cornerRadius = absoluteHeight/10;
+
+      rectMode(CENTER);
       stroke(componentColors.get(FittsComponent.TARGET_ACQUIRED).getRGB());
       fill(componentColors.get(FittsComponent.TARGET_ACQUIRED).getRGB());
-      float percentComplete = min(1.0, currentDwellTimeMillis/settings.dwellTimeMillis);
-      rect(instanceTargetX, instanceCenterY, instanceTargetWidth, percentComplete*instanceHeight, instanceTargetCornerRadius);
+      rect(targetX, centerY, targetWidth, absoluteHeight, cornerRadius);
     }
+  }
 
-    // draw cursor
+  protected void drawCursor(HashMap<FittsComponent, Color> componentColors) {
+    // dynamically calculate locations (enables resizes)
+    float absoluteWidth = relativeWidth*width;
+    float absoluteHeight = relativeHeight*height;
+    float centerX = (width/2) + (relativeCenterX*(width/2));
+    float centerY = (height/2) + (relativeCenterY*(height/2));
+    float cursorX = centerX + currentState.relativeCursorX*(absoluteWidth/2);
+    float cursorWidth = 0.05*absoluteWidth;
+    float cornerRadius = absoluteHeight/15;
+
+    rectMode(CENTER);
     stroke(componentColors.get(FittsComponent.CURSOR).getRGB());
     fill(componentColors.get(FittsComponent.CURSOR).getRGB());
-    rect(instanceCursorX, instanceCenterY, instanceCursorWidth, 0.8*instanceHeight, instanceCursorCornerRadius);
+    rect(cursorX, centerY, cursorWidth, 0.8*absoluteHeight, cornerRadius);
   }
 
   public boolean isAcquired() {
-     return currentState.isCursorInTarget() && currentDwellTimeMillis > settings.dwellTimeMillis;
+     return currentState.isCursorInTarget();
   }
 
   public FittsStatistics getStatistics() {

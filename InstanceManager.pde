@@ -1,8 +1,10 @@
 class InstanceManager {
+  InstanceFactory instanceFactory;
   Table input;
   int currentRow;
 
   public InstanceManager(String inputFilename) {
+    instanceFactory = new InstanceFactory();
     input = loadTable(inputFilename, "header");
     currentRow = 0;
 
@@ -29,20 +31,29 @@ class InstanceManager {
       r = input.getRow(currentRow++);
       targetX = r.getFloat("targetX");
       targetWidth = r.getFloat("targetWidth");
-      instance.add(new FittsInstance(0.5, 0.8, 0.0, 0.0, targetX, targetWidth));
+      instance.add(instanceFactory.makeInstance(0.5, 0.8, 0.0, 0.0, targetX, targetWidth));
 
     } else if (settings.dof == 2) {
       r = input.getRow(currentRow++);
       targetX = r.getFloat("targetX");
       targetWidth = r.getFloat("targetWidth");
-      instance.add(new FittsInstance(0.4, 0.8, 0.0, -0.5, targetX, targetWidth));
+      instance.add(instanceFactory.makeInstance(0.4, 0.8, 0.0, -0.5, targetX, targetWidth));
 
       r = input.getRow(currentRow++);
       targetX = r.getFloat("targetX");
       targetWidth = r.getFloat("targetWidth");
-      instance.add(new FittsInstance(0.4, 0.8, 0.0, 0.5, targetX, targetWidth));
+      instance.add(instanceFactory.makeInstance(0.4, 0.8, 0.0, 0.5, targetX, targetWidth));
     }
 
     return instance;
+  }
+}
+
+
+class InstanceFactory {
+  public InstanceFactory() {}
+
+  public FittsInstance makeInstance(float relativeHeight, float relativeWidth, float relativeCenterX, float relativeCenterY, float relativeTargetX, float relativeTargetWidth) {
+    return new FittsInstance(relativeHeight, relativeWidth, relativeCenterX, relativeCenterY, relativeTargetX, relativeTargetWidth);
   }
 }
