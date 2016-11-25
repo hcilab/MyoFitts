@@ -22,10 +22,21 @@ class GameManager {
   }
 
   public void update(float frameTimeMillis) {
-    HashMap<Action, Float> readings = controlManager.poll();
-    instance.get(currentInstanceIndex).update(frameTimeMillis, readings);
+    HashMap<Action, Float> realReadings = controlManager.poll();
 
-    if (readings.get(Action.IMPULSE) > 0.0)
+    HashMap<Action, Float> nullReadings = new HashMap<Action, Float>();
+    nullReadings.put(Action.LEFT, 0.0);
+    nullReadings.put(Action.RIGHT, 0.0);
+    nullReadings.put(Action.IMPULSE, 0.0);
+
+    for (int i=0; i<instance.size(); i++) {
+      if (i == currentInstanceIndex)
+        instance.get(i).update(frameTimeMillis, realReadings);
+      else
+        instance.get(i).update(frameTimeMillis, nullReadings);
+    }
+
+    if (realReadings.get(Action.IMPULSE) > 0.0)
       currentInstanceIndex = (currentInstanceIndex+1) % instance.size();
   }
 
