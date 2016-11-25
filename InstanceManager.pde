@@ -54,6 +54,13 @@ class InstanceFactory {
   public InstanceFactory() {}
 
   public FittsInstance makeInstance(float relativeHeight, float relativeWidth, float relativeCenterX, float relativeCenterY, float relativeTargetX, float relativeTargetWidth) {
-    return new FittsInstance(relativeHeight, relativeWidth, relativeCenterX, relativeCenterY, relativeTargetX, relativeTargetWidth);
+    switch (settings.acquisitionPolicy) {
+      case DWELL:
+        return new FittsInstanceDwell(relativeHeight, relativeWidth, relativeCenterX, relativeCenterY, relativeTargetX, relativeTargetWidth);
+      case IMPULSE:
+        return new FittsInstanceImpulse(relativeHeight, relativeWidth, relativeCenterX, relativeCenterY, relativeTargetX, relativeTargetWidth);
+      default:
+        return new FittsInstance(relativeHeight, relativeWidth, relativeCenterX, relativeCenterY, relativeTargetX, relativeTargetWidth);
+    }
   }
 }

@@ -8,5 +8,6 @@
   "timeBetweenImpulseMillis": 500.0,
 
   "travelTimeMillis": 2000.0,
-  "dwellTimeMillis": 500.0
+  "dwellTimeMillis": 500.0,
+  "acquisitionPolicy": "dwell"
 }

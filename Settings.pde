@@ -1,3 +1,5 @@
+enum AcquisitionPolicy {DWELL, IMPULSE};
+
 class Settings {
   // general settings
   public String calibrationFile;
@@ -12,7 +14,7 @@ class Settings {
   // fitts related
   public float travelTimeMillis;
   public float dwellTimeMillis;
-
+  public AcquisitionPolicy acquisitionPolicy;
 
   public Settings(String filename) {
     JSONObject s = loadJSONObject(filename);
@@ -27,6 +29,7 @@ class Settings {
 
     travelTimeMillis = s.getFloat("travelTimeMillis");
     dwellTimeMillis = s.getFloat("dwellTimeMillis");
+    acquisitionPolicy = parseAcquisitionPolicy(s.getString("acquisitionPolicy"));
   }
 
   private Policy parseControlPolicy(String policyName) {
@@ -49,5 +52,20 @@ class Settings {
     assert (p != null);
     return p;
 
+  }
+
+  private AcquisitionPolicy parseAcquisitionPolicy(String policyName) {
+    AcquisitionPolicy p = null;
+    switch (policyName) {
+      case "dwell":
+        p = AcquisitionPolicy.DWELL;
+        break;
+      case "impulse":
+        p = AcquisitionPolicy.IMPULSE;
+        break;
+    }
+
+    assert (p != null);
+    return p;
   }
 }
