@@ -18,9 +18,9 @@ class GameManager {
     } else {
       logTable = new Table();
       logTable.addColumn("tod");
-      logTable.addColumn("initialDistance");
-      logTable.addColumn("targetWidth");
-      logTable.addColumn("elapsedTime");
+      logTable.addColumn("amplitude");
+      logTable.addColumn("width");
+      logTable.addColumn("elapsedTimeMillis");
       logTable.addColumn("errors");
     }
 
@@ -74,17 +74,17 @@ class GameManager {
       FittsStatistics s = i.getStatistics();
 
       consolidatedStats.tod = consolidatedStats.tod > s.tod ? consolidatedStats.tod : s.tod;
-      consolidatedStats.initialDistance += abs(s.initialDistance);
-      consolidatedStats.targetWidth += s.targetWidth;
-      consolidatedStats.elapsedTime = max(consolidatedStats.elapsedTime, s.elapsedTime);
+      consolidatedStats.amplitude += abs(s.amplitude);
+      consolidatedStats.width += s.width;
+      consolidatedStats.elapsedTimeMillis = max(consolidatedStats.elapsedTimeMillis, s.elapsedTimeMillis);
       consolidatedStats.errors += s.errors;
     }
 
     TableRow newRow = logTable.addRow();
     newRow.setLong("tod", consolidatedStats.tod);
-    newRow.setFloat("initialDistance", consolidatedStats.initialDistance);
-    newRow.setFloat("targetWidth", consolidatedStats.targetWidth);
-    newRow.setInt("elapsedTime", consolidatedStats.elapsedTime);
+    newRow.setFloat("amplitude", consolidatedStats.amplitude);
+    newRow.setFloat("width", consolidatedStats.width);
+    newRow.setInt("elapsedTimeMillis", consolidatedStats.elapsedTimeMillis);
     newRow.setInt("errors", consolidatedStats.errors);
 
     saveTable(logTable, settings.logFile);

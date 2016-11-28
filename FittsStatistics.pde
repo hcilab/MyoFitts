@@ -3,9 +3,9 @@ enum Direction {INSIDE, OUTSIDE};
 
 class FittsStatistics {
   public long tod;
-  public float initialDistance;
-  public float targetWidth;
-  public int elapsedTime;
+  public float amplitude;
+  public float width;
+  public int elapsedTimeMillis;
   public int errors;
 
   private Direction lastEnteredTargetFrom;
@@ -14,20 +14,20 @@ class FittsStatistics {
     this(0.0, 0.0);
   }
 
-  public FittsStatistics (float initialDistance, float targetWidth) {
+  public FittsStatistics (float amplitude, float width) {
     this.tod = System.currentTimeMillis();
-    this.initialDistance = initialDistance;
-    this.targetWidth = targetWidth;
-    this.elapsedTime = 0;
+    this.amplitude = amplitude;
+    this.width = width;
+    this.elapsedTimeMillis = 0;
     this.errors = 0;
 
     // the initial value doesn't really matter
     lastEnteredTargetFrom = Direction.INSIDE;
   }
 
-  public void update(float elapsedTime, FittsState currentState, FittsState previousState) {
+  public void update(float elapsedTimeMillis, FittsState currentState, FittsState previousState) {
     // increment elapsed time
-    this.elapsedTime += elapsedTime;
+    this.elapsedTimeMillis += elapsedTimeMillis;
 
     // did cursor enter the target? from which direction?
     if (!previousState.isCursorInTarget() && currentState.isCursorInTarget()) {
