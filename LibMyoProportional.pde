@@ -67,6 +67,12 @@ class LibMyoProportional {
     float leftSensorMaxReading = calibrationSettings.getFloat("left_reading");
     float rightSensorMaxReading = calibrationSettings.getFloat("right_reading");
 
+    // normalize reading for backwards compatability (previous calibration tools saved the reading in range [0, 127])
+    if (leftSensorMaxReading > 1.0 || rightSensorMaxReading > 1.0) {
+      leftSensorMaxReading /= 127;
+      rightSensorMaxReading /= 127;
+    }
+
     registerActionManual(Action.LEFT, leftSensorID, leftSensorMaxReading);
     registerActionManual(Action.RIGHT, rightSensorID, rightSensorMaxReading);
   }
