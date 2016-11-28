@@ -1,6 +1,7 @@
 {
   "calibrationFile": "calibration.csv",
   "inputFile": "input.csv",
+  "logFile": "data/log.csv",
   "dof": 2,
 
   "controlPolicy": "maximum",
