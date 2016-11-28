@@ -7,7 +7,7 @@
   "activationThreshold": 0.15,
   "timeBetweenImpulseMillis": 500.0,
 
-  "travelTimeMillis": 2000.0,
-  "dwellTimeMillis": 500.0,
+  "travelTimeMillis": 1000.0,
+  "dwellTimeMillis": 1000.0,
   "acquisitionPolicy": "dwell"
 }
