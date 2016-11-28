@@ -21,6 +21,9 @@ class FittsStatistics {
     this.elapsedTimeMillis = 0;
     this.errors = 0;
 
+    if (settings.acquisitionPolicy == AcquisitionPolicy.DWELL)
+      this.elapsedTimeMillis -= settings.dwellTimeMillis;
+
     // the initial value doesn't really matter
     lastEnteredTargetFrom = Direction.INSIDE;
   }
