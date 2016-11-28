@@ -75,7 +75,7 @@ class FittsInstance {
     float centerX = (width/2) + (relativeCenterX*(width/2));
     float centerY = (height/2) + (relativeCenterY*(height/2));
     float targetX = centerX + currentState.relativeTargetX*(absoluteWidth/2);
-    float targetWidth = currentState.relativeTargetWidth * absoluteWidth;
+    float targetWidth = currentState.relativeTargetWidth*absoluteWidth / 2;
     float cornerRadius = absoluteHeight/10;
 
     rectMode(CENTER);
@@ -92,7 +92,7 @@ class FittsInstance {
       float centerX = (width/2) + (relativeCenterX*(width/2));
       float centerY = (height/2) + (relativeCenterY*(height/2));
       float targetX = centerX + currentState.relativeTargetX*(absoluteWidth/2);
-      float targetWidth = currentState.relativeTargetWidth * absoluteWidth;
+      float targetWidth = currentState.relativeTargetWidth*absoluteWidth / 2;
       float cornerRadius = absoluteHeight/10;
 
       rectMode(CENTER);

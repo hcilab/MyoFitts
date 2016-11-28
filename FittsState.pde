@@ -5,9 +5,9 @@ class FittsState {
   public float relativeCursorX;
   public float relativeTargetX;
 
-  // Specified in the range [0.0, 1.0]
+  // Specified in the range [0.0, 2.0]
   //  - 0.0 is no width
-  //  - 1.0 is entire instance width
+  //  - 2.0 is entire instance width
   public float relativeTargetWidth;
 
   public FittsState() {}
@@ -23,7 +23,7 @@ class FittsState {
   }
 
   public boolean isCursorInTarget() {
-    return relativeCursorX >= relativeTargetX - relativeTargetWidth && relativeCursorX <= relativeTargetX + relativeTargetWidth;
+    return relativeCursorX >= relativeTargetX - relativeTargetWidth/2 && relativeCursorX <= relativeTargetX + relativeTargetWidth/2;
   }
 
 }
