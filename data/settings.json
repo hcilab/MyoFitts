@@ -1,6 +1,6 @@
 {
   "calibrationFile": "calibration.csv",
-  "inputFile": "input.csv",
+  "inputFile": "input/simple.csv",
   "logFile": "data/log.csv",
   "dof": 2,
 
