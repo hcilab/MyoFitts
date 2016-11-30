@@ -99,7 +99,7 @@ class GameManager {
     newRow.setFloat("activationThreshold", settings.activationThreshold);
     newRow.setFloat("amplitude", consolidatedStats.amplitude);
     newRow.setFloat("width", consolidatedStats.width);
-    newRow.setInt("elapsedTimeMillis", consolidatedStats.elapsedTimeMillis);
+    newRow.setFloat("elapsedTimeMillis", consolidatedStats.elapsedTimeMillis);
     newRow.setFloat("distanceTravelled", consolidatedStats.distanceTravelled);
     newRow.setInt("errors", consolidatedStats.errors);
     newRow.setInt("overShoots", consolidatedStats.overShoots);

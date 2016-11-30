@@ -26,14 +26,14 @@ class FittsInstance {
     this.relativeCenterX = relativeCenterX;
     this.relativeCenterY = relativeCenterY;
 
-    currentState = new FittsState(0.0, relativeTargetX, relativeTargetWidth);
+    currentState = new FittsState(System.currentTimeMillis(), 0.0, relativeTargetX, relativeTargetWidth);
     previousState = currentState.clone();
     statistics = new FittsStatistics(relativeTargetX, relativeTargetWidth);
   }
 
   public void update(float frameTimeMillis, HashMap<Action, Float> readings) {
     updateState(frameTimeMillis, readings);
-    statistics.update(frameTimeMillis, currentState, previousState);
+    statistics.update(currentState, previousState);
   }
 
   private void updateState(float frameTimeMillis, HashMap<Action, Float> readings) {
@@ -44,6 +44,7 @@ class FittsInstance {
 
     previousState = currentState;
     currentState = previousState.clone();
+    currentState.tod = previousState.tod + frameTimeMillis;
     currentState.relativeCursorX = newX;
   }
 

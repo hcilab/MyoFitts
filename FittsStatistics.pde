@@ -6,7 +6,7 @@ class FittsStatistics {
   public float amplitude;
   public float width;
 
-  public int elapsedTimeMillis;
+  public float elapsedTimeMillis;
   public float distanceTravelled;
   public int errors;
   public int overShoots;
@@ -33,9 +33,9 @@ class FittsStatistics {
     lastEnteredTargetFrom = Direction.INSIDE;
   }
 
-  public void update(float elapsedTimeMillis, FittsState currentState, FittsState previousState) {
+  public void update(FittsState currentState, FittsState previousState) {
     // increment elapsed time and distanceTravelled
-    this.elapsedTimeMillis += elapsedTimeMillis;
+    this.elapsedTimeMillis += currentState.tod - previousState.tod;
     this.distanceTravelled += abs(currentState.relativeCursorX - previousState.relativeCursorX);
 
     // did cursor enter the target? from which direction?

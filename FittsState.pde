@@ -1,4 +1,6 @@
 class FittsState {
+  public float tod;
+
   // Specified in the range [-1.0, 1.0]
   //  - negative numbers imply left
   //  - positive numbers imply right
@@ -12,14 +14,15 @@ class FittsState {
 
   public FittsState() {}
 
-  public FittsState(float relativeCursorX, float relativeTargetX, float relativeTargetWidth) {
+  public FittsState(float tod, float relativeCursorX, float relativeTargetX, float relativeTargetWidth) {
+    this.tod = tod;
     this.relativeCursorX = relativeCursorX;
     this.relativeTargetX = relativeTargetX;
     this.relativeTargetWidth = relativeTargetWidth;
   }
 
   public FittsState clone() {
-    return new FittsState(relativeCursorX, relativeTargetX, relativeTargetWidth);
+    return new FittsState(tod, relativeCursorX, relativeTargetX, relativeTargetWidth);
   }
 
   public boolean isCursorInTarget() {
