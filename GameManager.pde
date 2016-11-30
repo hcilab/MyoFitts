@@ -18,10 +18,17 @@ class GameManager {
     } else {
       logTable = new Table();
       logTable.addColumn("tod");
+      logTable.addColumn("dof");
+      logTable.addColumn("acquisitionPolicy");
+      logTable.addColumn("dwellTimeMillis");
+      logTable.addColumn("travelTimeMillis");
+      logTable.addColumn("activationThreshold");
       logTable.addColumn("amplitude");
       logTable.addColumn("width");
       logTable.addColumn("elapsedTimeMillis");
+      logTable.addColumn("distanceTravelled");
       logTable.addColumn("errors");
+      logTable.addColumn("overShoots");
     }
 
     saveTable(logTable, settings.logFile);
@@ -70,6 +77,7 @@ class GameManager {
   public void logStatistics() {
     // is this even a valid approach?
     FittsStatistics consolidatedStats = new FittsStatistics();
+
     for (FittsInstance i : instance) {
       FittsStatistics s = i.getStatistics();
 
@@ -77,15 +85,24 @@ class GameManager {
       consolidatedStats.amplitude += abs(s.amplitude);
       consolidatedStats.width += s.width;
       consolidatedStats.elapsedTimeMillis = max(consolidatedStats.elapsedTimeMillis, s.elapsedTimeMillis);
+      consolidatedStats.distanceTravelled += s.distanceTravelled;
       consolidatedStats.errors += s.errors;
+      consolidatedStats.overShoots += s.overShoots;
     }
 
     TableRow newRow = logTable.addRow();
     newRow.setLong("tod", consolidatedStats.tod);
+    newRow.setInt("dof", settings.dof);
+    newRow.setString("acquisitionPolicy", settings.acquisitionPolicy == AcquisitionPolicy.DWELL ? "dwell" : "impulse");
+    newRow.setFloat("dwellTimeMillis", settings.dwellTimeMillis);
+    newRow.setFloat("travelTimeMillis", settings.travelTimeMillis);
+    newRow.setFloat("activationThreshold", settings.activationThreshold);
     newRow.setFloat("amplitude", consolidatedStats.amplitude);
     newRow.setFloat("width", consolidatedStats.width);
     newRow.setInt("elapsedTimeMillis", consolidatedStats.elapsedTimeMillis);
+    newRow.setFloat("distanceTravelled", consolidatedStats.distanceTravelled);
     newRow.setInt("errors", consolidatedStats.errors);
+    newRow.setInt("overShoots", consolidatedStats.overShoots);
 
     saveTable(logTable, settings.logFile);
   }

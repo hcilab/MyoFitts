@@ -5,8 +5,11 @@ class FittsStatistics {
   public long tod;
   public float amplitude;
   public float width;
+
   public int elapsedTimeMillis;
+  public float distanceTravelled;
   public int errors;
+  public int overShoots;
 
   private Direction lastEnteredTargetFrom;
 
@@ -19,7 +22,9 @@ class FittsStatistics {
     this.amplitude = amplitude;
     this.width = width;
     this.elapsedTimeMillis = 0;
+    this.distanceTravelled = 0;
     this.errors = 0;
+    this.overShoots = 0;
 
     if (settings.acquisitionPolicy == AcquisitionPolicy.DWELL)
       this.elapsedTimeMillis -= settings.dwellTimeMillis;
@@ -29,8 +34,9 @@ class FittsStatistics {
   }
 
   public void update(float elapsedTimeMillis, FittsState currentState, FittsState previousState) {
-    // increment elapsed time
+    // increment elapsed time and distanceTravelled
     this.elapsedTimeMillis += elapsedTimeMillis;
+    this.distanceTravelled += abs(currentState.relativeCursorX - previousState.relativeCursorX);
 
     // did cursor enter the target? from which direction?
     if (!previousState.isCursorInTarget() && currentState.isCursorInTarget()) {
@@ -40,8 +46,14 @@ class FittsStatistics {
         lastEnteredTargetFrom = Direction.OUTSIDE;
     }
 
-    // did cursor leave the target?
-    if (previousState.isCursorInTarget() && !currentState.isCursorInTarget())
+    // did cursor leave the target? from which direction?
+    if (previousState.isCursorInTarget() && !currentState.isCursorInTarget()) {
       errors++;
+
+      Direction lastExitedTargetFrom = abs(currentState.relativeCursorX) < abs(currentState.relativeTargetX) ? Direction.INSIDE : Direction.OUTSIDE;
+      if ((lastEnteredTargetFrom == Direction.INSIDE && lastExitedTargetFrom == Direction.OUTSIDE) || (lastEnteredTargetFrom == Direction.OUTSIDE && lastExitedTargetFrom == Direction.INSIDE))
+        overShoots++;
+    }
+
   }
 }
