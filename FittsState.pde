@@ -1,5 +1,5 @@
 class FittsState {
-  public float tod;
+  public long tod;
 
   // Specified in the range [-1.0, 1.0]
   //  - negative numbers imply left
@@ -14,7 +14,7 @@ class FittsState {
 
   public FittsState() {}
 
-  public FittsState(float tod, float relativeCursorX, float relativeTargetX, float relativeTargetWidth) {
+  public FittsState(long tod, float relativeCursorX, float relativeTargetX, float relativeTargetWidth) {
     this.tod = tod;
     this.relativeCursorX = relativeCursorX;
     this.relativeTargetX = relativeTargetX;

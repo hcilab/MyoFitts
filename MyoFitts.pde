@@ -24,7 +24,7 @@ void setup() {
 
 void draw() {
   background(255, 255, 255);
-  float frameTimeMillis = 1000.0/frameRate;
+  long frameTimeMillis = round(1000.0/frameRate);
 
   if (gameManager.isAcquired()) {
     gameManager.logStatistics();

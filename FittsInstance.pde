@@ -31,12 +31,12 @@ class FittsInstance {
     statistics = new FittsStatistics(relativeTargetX, relativeTargetWidth);
   }
 
-  public void update(float frameTimeMillis, HashMap<Action, Float> readings) {
+  public void update(long frameTimeMillis, HashMap<Action, Float> readings) {
     updateState(frameTimeMillis, readings);
     statistics.update(currentState, previousState);
   }
 
-  private void updateState(float frameTimeMillis, HashMap<Action, Float> readings) {
+  private void updateState(long frameTimeMillis, HashMap<Action, Float> readings) {
     float speed = readings.get(Action.RIGHT) - readings.get(Action.LEFT);
     float newX = currentState.relativeCursorX + speed*(frameTimeMillis/settings.travelTimeMillis);
     newX = max(-1.0, newX);

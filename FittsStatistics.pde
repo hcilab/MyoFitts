@@ -6,7 +6,7 @@ class FittsStatistics {
   public float amplitude;
   public float width;
 
-  public float elapsedTimeMillis;
+  public long elapsedTimeMillis;
   public float distanceTravelled;
   public int errors;
   public int overShoots;

@@ -7,7 +7,7 @@ class FittsInstanceImpulse extends FittsInstance {
   }
 
 
-  public void update(float frameTimeMillis, HashMap<Action, Float> readings) {
+  public void update(long frameTimeMillis, HashMap<Action, Float> readings) {
     super.update(frameTimeMillis, readings);
 
     if (currentState.isCursorInTarget() && readings.get(Action.IMPULSE) > 0.0)

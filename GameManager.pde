@@ -46,7 +46,7 @@ class GameManager {
     currentInstanceIndex = 0;
   }
 
-  public void update(float frameTimeMillis) {
+  public void update(long frameTimeMillis) {
     HashMap<Action, Float> realReadings = controlManager.poll();
 
     HashMap<Action, Float> nullReadings = new HashMap<Action, Float>();
@@ -84,7 +84,7 @@ class GameManager {
       consolidatedStats.tod = consolidatedStats.tod > s.tod ? consolidatedStats.tod : s.tod;
       consolidatedStats.amplitude += abs(s.amplitude);
       consolidatedStats.width += s.width;
-      consolidatedStats.elapsedTimeMillis = max(consolidatedStats.elapsedTimeMillis, s.elapsedTimeMillis);
+      consolidatedStats.elapsedTimeMillis = consolidatedStats.elapsedTimeMillis > s.elapsedTimeMillis ? consolidatedStats.elapsedTimeMillis : s.elapsedTimeMillis;
       consolidatedStats.distanceTravelled += s.distanceTravelled;
       consolidatedStats.errors += s.errors;
       consolidatedStats.overShoots += s.overShoots;
@@ -99,7 +99,7 @@ class GameManager {
     newRow.setFloat("activationThreshold", settings.activationThreshold);
     newRow.setFloat("amplitude", consolidatedStats.amplitude);
     newRow.setFloat("width", consolidatedStats.width);
-    newRow.setFloat("elapsedTimeMillis", consolidatedStats.elapsedTimeMillis);
+    newRow.setLong("elapsedTimeMillis", consolidatedStats.elapsedTimeMillis);
     newRow.setFloat("distanceTravelled", consolidatedStats.distanceTravelled);
     newRow.setInt("errors", consolidatedStats.errors);
     newRow.setInt("overShoots", consolidatedStats.overShoots);
