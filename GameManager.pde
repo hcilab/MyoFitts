@@ -56,6 +56,7 @@ class GameManager {
 
   public void log() {
     statisticsManager.logStatistics();
+    statisticsManager.logStates();
     statisticsManager.clear();
   }
 }

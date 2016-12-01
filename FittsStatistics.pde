@@ -13,8 +13,7 @@ class FittsStatistics {
 
   private Direction lastEnteredTargetFrom;
 
-  private FittsState currentState;
-  private FittsState previousState;
+  private ArrayList<FittsState> states;
 
   public FittsStatistics () {
     this.tod = System.currentTimeMillis();
@@ -31,18 +30,16 @@ class FittsStatistics {
     // the initial value doesn't really matter
     lastEnteredTargetFrom = Direction.INSIDE;
 
-    currentState = null;
-    previousState = null;
+    states = new ArrayList<FittsState>();
   }
 
   public void update(FittsState state) {
-    if (currentState == null) {
-      currentState = state;
+    states.add(state);
+    if (states.size() < 2)
       return;
-    }
 
-    previousState = currentState;
-    currentState = state;
+    FittsState currentState = states.get(states.size()-1);
+    FittsState previousState = states.get(states.size()-2);
 
     // save "constants"
     this.amplitude = abs(currentState.relativeTargetX);
@@ -69,5 +66,9 @@ class FittsStatistics {
         overShoots++;
     }
 
+  }
+
+  public ArrayList<FittsState> getStates() {
+    return states;
   }
 }

@@ -2,6 +2,7 @@
   "calibrationFile": "calibration.csv",
   "inputFile": "input/simple.csv",
   "logFile": "data/log.csv",
+  "stateFile": "data/states.csv",
   "dof": 2,
 
   "controlPolicy": "maximum",

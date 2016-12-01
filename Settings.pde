@@ -5,6 +5,7 @@ class Settings {
   public String calibrationFile;
   public String inputFile; 
   public String logFile;
+  public String stateFile;
   public int dof;
 
   // control related
@@ -23,6 +24,7 @@ class Settings {
     calibrationFile = s.getString("calibrationFile");
     inputFile = s.getString("inputFile");
     logFile = s.getString("logFile");
+    stateFile = s.getString("stateFile");
     dof = s.getInt("dof");
 
     controlPolicy = parseControlPolicy(s.getString("controlPolicy"));

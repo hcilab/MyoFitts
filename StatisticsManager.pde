@@ -1,17 +1,18 @@
 class StatisticsManager {
   Table statisticsTable;
+  Table statesTable;
   ArrayList<FittsStatistics> statistics;
 
   public StatisticsManager() {
     loadStatisticsTable();
+    loadStatesTable();
     statistics = new ArrayList<FittsStatistics>();
     for (int i=0; i<settings.dof; i++)
       statistics.add(new FittsStatistics());
   }
 
   private void loadStatisticsTable() {
-    File f = new File(settings.logFile);
-    if (f.exists()) {
+    if (fileExists(settings.logFile)) {
       statisticsTable = loadTable(settings.logFile, "header");
     } else {
       statisticsTable = new Table();
@@ -30,6 +31,26 @@ class StatisticsManager {
     }
 
     saveTable(statisticsTable, settings.logFile);
+  }
+
+  private void loadStatesTable() {
+    if (fileExists(settings.stateFile)) {
+      statesTable = loadTable(settings.stateFile, "header");
+    } else {
+      statesTable = new Table();
+      statesTable.addColumn("dof");
+      statesTable.addColumn("tod");
+      statesTable.addColumn("cursorX");
+      statesTable.addColumn("targetX");
+      statesTable.addColumn("targetWidth");
+    }
+
+    saveTable(statesTable, settings.stateFile);
+  }
+
+  private boolean fileExists(String filename) {
+    File f = new File(settings.stateFile);
+    return f.exists();
   }
 
   public void update(ArrayList<FittsInstance> currentInstance) {
@@ -71,5 +92,26 @@ class StatisticsManager {
     newRow.setInt("overShoots", consolidatedStats.overShoots);
 
     saveTable(statisticsTable, settings.logFile);
+  }
+
+  public void logStates() {
+    int count = statistics.get(0).getStates().size();
+
+    FittsState state;
+    TableRow newRow;
+    for (int i=0; i<count; i++) {
+      for (int j=0; j<settings.dof; j++) {
+        state = statistics.get(j).getStates().get(i);
+        newRow = statesTable.addRow();
+
+        newRow.setInt("dof", j);
+        newRow.setLong("tod", state.tod);
+        newRow.setFloat("cursorX", state.relativeCursorX);
+        newRow.setFloat("targetX", state.relativeTargetX);
+        newRow.setFloat("targetWidth", state.relativeTargetWidth);
+      }
+    }
+
+    saveTable(statesTable, settings.stateFile);
   }
 }
