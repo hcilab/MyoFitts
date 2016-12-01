@@ -2,9 +2,12 @@ HashMap<FittsComponent, Color> ACTIVE_COLORS;
 HashMap<FittsComponent, Color> BACKGROUND_COLORS;
 
 Settings settings;
-InstanceManager instanceManager;
-GameManager gameManager;
+ReplayManager replayManager;
+ArrayList<FittsState> currentStates;
+ArrayList<FittsState> nextStates;
 
+long timeBetweenStates;
+long elapsedTime;
 
 void setup() {
   fullScreen();
@@ -12,13 +15,13 @@ void setup() {
   initializeColors();
 
   initializeSettingsOrDie();
+  initializeReplayManagerOrDie();
 
-  initializeGameManagerOrDie();
-  initializeInstanceManagerOrDie();
+  nextStates = replayManager.getNext();
+  currentStates = nextStates;
 
-  // load initial instance
-  if (instanceManager.hasNext())
-    gameManager.setInstance(instanceManager.getNext());
+  timeBetweenStates = nextStates.get(0).tod - currentStates.get(0).tod;
+  elapsedTime = 0;
 }
 
 
@@ -26,16 +29,25 @@ void draw() {
   background(255, 255, 255);
   long frameTimeMillis = round(1000.0/frameRate);
 
-  if (gameManager.isAcquired()) {
-    gameManager.log();
-    if (instanceManager.hasNext())
-      gameManager.setInstance(instanceManager.getNext());
-    else
+  elapsedTime += frameTimeMillis;
+
+  if (elapsedTime > timeBetweenStates) {
+    if (replayManager.hasNext()) {
+      currentStates = nextStates;
+      nextStates = replayManager.getNext();
+      timeBetweenStates = nextStates.get(0).tod - currentStates.get(0).tod;
+      elapsedTime = 0;
+    } else {
       exit();
+    }
   }
 
-  gameManager.update(frameTimeMillis);
-  gameManager.draw();
+  // currently hard-coded for 2 dof
+  FittsInstance i1 = new FittsInstance(0.4, 0.8, 0.0, -0.5, currentStates.get(0).relativeTargetX, currentStates.get(0).relativeTargetWidth, currentStates.get(0).relativeCursorX);
+  FittsInstance i2 = new FittsInstance(0.4, 0.8, 0.0, 0.5, currentStates.get(1).relativeTargetX, currentStates.get(1).relativeTargetWidth, currentStates.get(1).relativeCursorX);
+
+  i1.draw(BACKGROUND_COLORS);
+  i2.draw(BACKGROUND_COLORS);
 }
 
 
@@ -57,18 +69,32 @@ private void initializeSettingsOrDie() {
   settings = new Settings("settings.json");
 }
 
-private void initializeGameManagerOrDie() {
-  try {
-    gameManager = new GameManager(this);
-  } catch (MyoNotDetectectedError e) {
-    println("[ERROR] Could not detect armband, exiting.");
-    System.exit(1);
-  } catch (CalibrationFailedException e) {
-    println("[ERROR] Could not load calibration settings from: " + settings.calibrationFile + ", exiting.");
-    System.exit(2);
-  }
+private void initializeReplayManagerOrDie() {
+  replayManager = new ReplayManager(settings.stateFile);
 }
 
-private void initializeInstanceManagerOrDie() {
-  instanceManager = new InstanceManager(settings.inputFile);
+
+class ReplayManager {
+  Table replayData;
+  int currentRow;
+
+  public ReplayManager(String filename) {
+    replayData = loadTable(filename, "header");
+    currentRow = 0;
+  }
+
+  public boolean hasNext() {
+    return currentRow + settings.dof < replayData.getRowCount();
+  }
+
+  public ArrayList<FittsState> getNext() {
+    ArrayList<FittsState> states = new ArrayList<FittsState>();
+
+    for (int i=0; i<settings.dof; i++) {
+      TableRow r = replayData.getRow(currentRow++);
+      states.add(new FittsState(r.getLong("tod"), r.getFloat("cursorX"), r.getFloat("targetX"), r.getFloat("targetWidth")));
+    }
+
+    return states;
+  }
 }

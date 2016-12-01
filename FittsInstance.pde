@@ -19,12 +19,16 @@ class FittsInstance {
   protected FittsState state;
 
   public FittsInstance(float relativeHeight, float relativeWidth, float relativeCenterX, float relativeCenterY, float relativeTargetX, float relativeTargetWidth) {
+    this(relativeHeight, relativeWidth, relativeCenterX, relativeCenterY, relativeTargetX, relativeTargetWidth, 0.0);
+  }
+
+  public FittsInstance(float relativeHeight, float relativeWidth, float relativeCenterX, float relativeCenterY, float relativeTargetX, float relativeTargetWidth, float relativeCursorX) {
     this.relativeHeight = relativeHeight;
     this.relativeWidth = relativeWidth;
     this.relativeCenterX = relativeCenterX;
     this.relativeCenterY = relativeCenterY;
 
-    state = new FittsState(System.currentTimeMillis(), 0.0, relativeTargetX, relativeTargetWidth);
+    state = new FittsState(System.currentTimeMillis(), relativeCursorX, relativeTargetX, relativeTargetWidth);
   }
 
   public void update(long frameTimeMillis, HashMap<Action, Float> readings) {
