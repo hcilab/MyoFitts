@@ -27,7 +27,7 @@ void draw() {
   long frameTimeMillis = round(1000.0/frameRate);
 
   if (gameManager.isAcquired()) {
-    gameManager.logStatistics();
+    gameManager.log();
     if (instanceManager.hasNext())
       gameManager.setInstance(instanceManager.getNext());
     else

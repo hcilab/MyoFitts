@@ -10,14 +10,14 @@ class FittsInstanceImpulse extends FittsInstance {
   public void update(long frameTimeMillis, HashMap<Action, Float> readings) {
     super.update(frameTimeMillis, readings);
 
-    if (currentState.isCursorInTarget() && readings.get(Action.IMPULSE) > 0.0)
+    if (state.isCursorInTarget() && readings.get(Action.IMPULSE) > 0.0)
       wasImpulseSinceLastEntry = true;
-    else if (!currentState.isCursorInTarget())
+    else if (!state.isCursorInTarget())
       wasImpulseSinceLastEntry = false;
   }
 
   public boolean isAcquired() {
-     return currentState.isCursorInTarget() && wasImpulseSinceLastEntry;
+     return state.isCursorInTarget() && wasImpulseSinceLastEntry;
   }
 
   protected void drawAcquiredTarget(HashMap<FittsComponent, Color> componentColors) {
@@ -27,8 +27,8 @@ class FittsInstanceImpulse extends FittsInstance {
       float absoluteHeight = relativeHeight*height;
       float centerX = (width/2) + (relativeCenterX*(width/2));
       float centerY = (height/2) + (relativeCenterY*(height/2));
-      float targetX = centerX + currentState.relativeTargetX*(absoluteWidth/2);
-      float targetWidth = currentState.relativeTargetWidth*absoluteWidth / 2;
+      float targetX = centerX + state.relativeTargetX*(absoluteWidth/2);
+      float targetWidth = state.relativeTargetWidth*absoluteWidth / 2;
       float cornerRadius = absoluteHeight/10;
 
       rectMode(CENTER);

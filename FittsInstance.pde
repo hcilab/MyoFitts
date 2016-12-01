@@ -16,9 +16,7 @@ class FittsInstance {
   protected float relativeHeight;
   protected float relativeWidth;
 
-  protected FittsState currentState;
-  protected FittsState previousState;
-  protected FittsStatistics statistics;
+  protected FittsState state;
 
   public FittsInstance(float relativeHeight, float relativeWidth, float relativeCenterX, float relativeCenterY, float relativeTargetX, float relativeTargetWidth) {
     this.relativeHeight = relativeHeight;
@@ -26,26 +24,22 @@ class FittsInstance {
     this.relativeCenterX = relativeCenterX;
     this.relativeCenterY = relativeCenterY;
 
-    currentState = new FittsState(System.currentTimeMillis(), 0.0, relativeTargetX, relativeTargetWidth);
-    previousState = currentState.clone();
-    statistics = new FittsStatistics(relativeTargetX, relativeTargetWidth);
+    state = new FittsState(System.currentTimeMillis(), 0.0, relativeTargetX, relativeTargetWidth);
   }
 
   public void update(long frameTimeMillis, HashMap<Action, Float> readings) {
-    updateState(frameTimeMillis, readings);
-    statistics.update(currentState, previousState);
-  }
-
-  private void updateState(long frameTimeMillis, HashMap<Action, Float> readings) {
     float speed = readings.get(Action.RIGHT) - readings.get(Action.LEFT);
-    float newX = currentState.relativeCursorX + speed*(frameTimeMillis/settings.travelTimeMillis);
+    float newX = state.relativeCursorX + speed*(frameTimeMillis/settings.travelTimeMillis);
     newX = max(-1.0, newX);
     newX = min(newX, 1.0);
 
-    previousState = currentState;
-    currentState = previousState.clone();
-    currentState.tod = previousState.tod + frameTimeMillis;
-    currentState.relativeCursorX = newX;
+    state = state.clone();
+    state.tod += frameTimeMillis;
+    state.relativeCursorX = newX;
+  }
+
+  public FittsState getState() {
+    return state;
   }
 
   public void draw(HashMap<FittsComponent, Color> componentColors) {
@@ -75,8 +69,8 @@ class FittsInstance {
     float absoluteHeight = relativeHeight*height;
     float centerX = (width/2) + (relativeCenterX*(width/2));
     float centerY = (height/2) + (relativeCenterY*(height/2));
-    float targetX = centerX + currentState.relativeTargetX*(absoluteWidth/2);
-    float targetWidth = currentState.relativeTargetWidth*absoluteWidth / 2;
+    float targetX = centerX + state.relativeTargetX*(absoluteWidth/2);
+    float targetWidth = state.relativeTargetWidth*absoluteWidth / 2;
     float cornerRadius = absoluteHeight/10;
 
     rectMode(CENTER);
@@ -86,14 +80,14 @@ class FittsInstance {
   }
 
   protected void drawAcquiredTarget(HashMap<FittsComponent, Color> componentColors) {
-    if (currentState.isCursorInTarget()) {
+    if (state.isCursorInTarget()) {
       // dynamically calculate locations (enables resizes)
       float absoluteWidth = relativeWidth*width;
       float absoluteHeight = relativeHeight*height;
       float centerX = (width/2) + (relativeCenterX*(width/2));
       float centerY = (height/2) + (relativeCenterY*(height/2));
-      float targetX = centerX + currentState.relativeTargetX*(absoluteWidth/2);
-      float targetWidth = currentState.relativeTargetWidth*absoluteWidth / 2;
+      float targetX = centerX + state.relativeTargetX*(absoluteWidth/2);
+      float targetWidth = state.relativeTargetWidth*absoluteWidth / 2;
       float cornerRadius = absoluteHeight/10;
 
       rectMode(CENTER);
@@ -109,7 +103,7 @@ class FittsInstance {
     float absoluteHeight = relativeHeight*height;
     float centerX = (width/2) + (relativeCenterX*(width/2));
     float centerY = (height/2) + (relativeCenterY*(height/2));
-    float cursorX = centerX + currentState.relativeCursorX*(absoluteWidth/2);
+    float cursorX = centerX + state.relativeCursorX*(absoluteWidth/2);
     float cursorWidth = 0.05*absoluteWidth;
     float cornerRadius = absoluteHeight/15;
 
@@ -120,10 +114,6 @@ class FittsInstance {
   }
 
   public boolean isAcquired() {
-     return currentState.isCursorInTarget();
-  }
-
-  public FittsStatistics getStatistics() {
-    return statistics;
+     return state.isCursorInTarget();
   }
 }

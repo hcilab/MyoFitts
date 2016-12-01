@@ -13,14 +13,13 @@ class FittsStatistics {
 
   private Direction lastEnteredTargetFrom;
 
-  public FittsStatistics () {
-    this(0.0, 0.0);
-  }
+  private FittsState currentState;
+  private FittsState previousState;
 
-  public FittsStatistics (float amplitude, float width) {
+  public FittsStatistics () {
     this.tod = System.currentTimeMillis();
-    this.amplitude = amplitude;
-    this.width = width;
+    this.amplitude = 0;
+    this.width = 0;
     this.elapsedTimeMillis = 0;
     this.distanceTravelled = 0;
     this.errors = 0;
@@ -31,9 +30,24 @@ class FittsStatistics {
 
     // the initial value doesn't really matter
     lastEnteredTargetFrom = Direction.INSIDE;
+
+    currentState = null;
+    previousState = null;
   }
 
-  public void update(FittsState currentState, FittsState previousState) {
+  public void update(FittsState state) {
+    if (currentState == null) {
+      currentState = state;
+      return;
+    }
+
+    previousState = currentState;
+    currentState = state;
+
+    // save "constants"
+    this.amplitude = abs(currentState.relativeTargetX);
+    this.width = currentState.relativeTargetWidth;
+
     // increment elapsed time and distanceTravelled
     this.elapsedTimeMillis += currentState.tod - previousState.tod;
     this.distanceTravelled += abs(currentState.relativeCursorX - previousState.relativeCursorX);

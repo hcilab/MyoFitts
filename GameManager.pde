@@ -1,37 +1,15 @@
 class GameManager {
   private ControlManager controlManager;
+  private StatisticsManager statisticsManager;
   private ArrayList<FittsInstance> instance;
   private int currentInstanceIndex;
   private Table logTable;
 
   public GameManager(PApplet mainObject) throws MyoNotDetectectedError, CalibrationFailedException {
     controlManager = new ControlManager(mainObject);
+    statisticsManager = new StatisticsManager();
     instance = new ArrayList<FittsInstance>();
     currentInstanceIndex = 0;
-    loadLogTable();
-  }
-
-  private void loadLogTable() {
-    File f = new File(settings.logFile);
-    if (f.exists()) {
-      logTable = loadTable(settings.logFile, "header");
-    } else {
-      logTable = new Table();
-      logTable.addColumn("tod");
-      logTable.addColumn("dof");
-      logTable.addColumn("acquisitionPolicy");
-      logTable.addColumn("dwellTimeMillis");
-      logTable.addColumn("travelTimeMillis");
-      logTable.addColumn("activationThreshold");
-      logTable.addColumn("amplitude");
-      logTable.addColumn("width");
-      logTable.addColumn("elapsedTimeMillis");
-      logTable.addColumn("distanceTravelled");
-      logTable.addColumn("errors");
-      logTable.addColumn("overShoots");
-    }
-
-    saveTable(logTable, settings.logFile);
   }
 
   public boolean isAcquired() {
@@ -63,6 +41,8 @@ class GameManager {
 
     if (realReadings.get(Action.IMPULSE) > 0.0)
       currentInstanceIndex = (currentInstanceIndex+1) % instance.size();
+
+    statisticsManager.update(instance);
   }
 
   public void draw() {
@@ -74,36 +54,8 @@ class GameManager {
     }
   }
 
-  public void logStatistics() {
-    // is this even a valid approach?
-    FittsStatistics consolidatedStats = new FittsStatistics();
-
-    for (FittsInstance i : instance) {
-      FittsStatistics s = i.getStatistics();
-
-      consolidatedStats.tod = consolidatedStats.tod > s.tod ? consolidatedStats.tod : s.tod;
-      consolidatedStats.amplitude += abs(s.amplitude);
-      consolidatedStats.width += s.width;
-      consolidatedStats.elapsedTimeMillis = consolidatedStats.elapsedTimeMillis > s.elapsedTimeMillis ? consolidatedStats.elapsedTimeMillis : s.elapsedTimeMillis;
-      consolidatedStats.distanceTravelled += s.distanceTravelled;
-      consolidatedStats.errors += s.errors;
-      consolidatedStats.overShoots += s.overShoots;
-    }
-
-    TableRow newRow = logTable.addRow();
-    newRow.setLong("tod", consolidatedStats.tod);
-    newRow.setInt("dof", settings.dof);
-    newRow.setString("acquisitionPolicy", settings.acquisitionPolicy == AcquisitionPolicy.DWELL ? "dwell" : "impulse");
-    newRow.setFloat("dwellTimeMillis", settings.dwellTimeMillis);
-    newRow.setFloat("travelTimeMillis", settings.travelTimeMillis);
-    newRow.setFloat("activationThreshold", settings.activationThreshold);
-    newRow.setFloat("amplitude", consolidatedStats.amplitude);
-    newRow.setFloat("width", consolidatedStats.width);
-    newRow.setLong("elapsedTimeMillis", consolidatedStats.elapsedTimeMillis);
-    newRow.setFloat("distanceTravelled", consolidatedStats.distanceTravelled);
-    newRow.setInt("errors", consolidatedStats.errors);
-    newRow.setInt("overShoots", consolidatedStats.overShoots);
-
-    saveTable(logTable, settings.logFile);
+  public void log() {
+    statisticsManager.logStatistics();
+    statisticsManager.clear();
   }
 }
