@@ -12,8 +12,8 @@ class StatisticsManager {
   }
 
   private void loadStatisticsTable() {
-    if (fileExists(settings.logFile)) {
-      statisticsTable = loadTable(settings.logFile, "header");
+    if (fileExists(settings.statisticsFile)) {
+      statisticsTable = loadTable(settings.statisticsFile, "header");
     } else {
       statisticsTable = new Table();
       statisticsTable.addColumn("tod");
@@ -30,7 +30,7 @@ class StatisticsManager {
       statisticsTable.addColumn("overShoots");
     }
 
-    saveTable(statisticsTable, settings.logFile);
+    saveTable(statisticsTable, settings.statisticsFile);
   }
 
   private void loadStatesTable() {
@@ -91,7 +91,7 @@ class StatisticsManager {
     newRow.setInt("errors", consolidatedStats.errors);
     newRow.setInt("overShoots", consolidatedStats.overShoots);
 
-    saveTable(statisticsTable, settings.logFile);
+    saveTable(statisticsTable, settings.statisticsFile);
   }
 
   public void logStates() {

@@ -4,7 +4,7 @@ class Settings {
   // general settings
   public String calibrationFile;
   public String inputFile; 
-  public String logFile;
+  public String statisticsFile;
   public String stateFile;
   public int dof;
 
@@ -23,7 +23,7 @@ class Settings {
 
     calibrationFile = s.getString("calibrationFile");
     inputFile = s.getString("inputFile");
-    logFile = s.getString("logFile");
+    statisticsFile = s.getString("statisticsFile");
     stateFile = s.getString("stateFile");
     dof = s.getInt("dof");
 
