@@ -2,7 +2,7 @@
   "calibrationFile": "calibration.csv",
   "emgFile": "emg.csv",
 
-  "inputFile": "input/simple.csv",
+  "inputFile": "input/test.csv",
   "statisticsFile": "data/log.csv",
   "stateFile": "data/states.csv",
   "dof": 2,
