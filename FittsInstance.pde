@@ -1,6 +1,6 @@
 import java.util.HashMap;
 
-enum FittsComponent {CURSOR, TARGET_FREE, TARGET_ACQUIRED, BACKGROUND};
+enum FittsComponent {CURSOR, CROSSHAIR, TARGET_FREE, TARGET_ACQUIRED, BACKGROUND};
 
 class FittsInstance {
   // Specified in the range [-1.0, 1.0].
@@ -105,12 +105,17 @@ class FittsInstance {
     float centerY = (height/2) + (relativeCenterY*(height/2));
     float cursorX = centerX + state.relativeCursorX*(absoluteWidth/2);
     float cursorWidth = 0.05*absoluteWidth;
+    float crossHairWidth = 0.001*absoluteWidth;
     float cornerRadius = absoluteHeight/15;
 
     rectMode(CENTER);
     stroke(componentColors.get(FittsComponent.CURSOR).getRGB());
     fill(componentColors.get(FittsComponent.CURSOR).getRGB());
     rect(cursorX, centerY, cursorWidth, 0.8*absoluteHeight, cornerRadius);
+
+    stroke(componentColors.get(FittsComponent.CROSSHAIR).getRGB());
+    fill(componentColors.get(FittsComponent.CROSSHAIR).getRGB());
+    rect(cursorX, centerY, crossHairWidth, 0.8*absoluteHeight);
   }
 
   public boolean isAcquired() {
