@@ -104,7 +104,7 @@ class FittsInstance {
     float centerX = (width/2) + (relativeCenterX*(width/2));
     float centerY = (height/2) + (relativeCenterY*(height/2));
     float cursorX = centerX + state.relativeCursorX*(absoluteWidth/2);
-    float cursorWidth = 0.05*absoluteWidth;
+    float cursorWidth = 0.03*absoluteWidth;
     float crossHairWidth = 0.001*absoluteWidth;
     float cornerRadius = absoluteHeight/15;
 
