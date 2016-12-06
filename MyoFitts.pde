@@ -4,6 +4,7 @@ HashMap<FittsComponent, Color> BACKGROUND_COLORS;
 Settings settings;
 InstanceManager instanceManager;
 GameManager gameManager;
+long lastFrameTimestamp;
 
 
 void setup() {
@@ -19,12 +20,17 @@ void setup() {
   // load initial instance
   if (instanceManager.hasNext())
     gameManager.setInstance(instanceManager.getNext());
+
+  lastFrameTimestamp = System.currentTimeMillis();
 }
 
 
 void draw() {
   background(255, 255, 255);
-  long frameTimeMillis = round(1000.0/frameRate);
+
+  long thisFrameTimestamp = System.currentTimeMillis();
+  long frameTimeMillis = thisFrameTimestamp - lastFrameTimestamp;
+  lastFrameTimestamp = thisFrameTimestamp;
 
   if (gameManager.isAcquired()) {
     gameManager.log();
