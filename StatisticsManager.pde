@@ -81,8 +81,8 @@ class StatisticsManager {
     newRow.setLong("tod", consolidatedStats.tod);
     newRow.setInt("dof", settings.dof);
     newRow.setString("acquisitionPolicy", settings.acquisitionPolicy == AcquisitionPolicy.DWELL ? "dwell" : "impulse");
-    newRow.setFloat("dwellTimeMillis", settings.dwellTimeMillis);
-    newRow.setFloat("travelTimeMillis", settings.travelTimeMillis);
+    newRow.setLong("dwellTimeMillis", settings.dwellTimeMillis);
+    newRow.setLong("travelTimeMillis", settings.travelTimeMillis);
     newRow.setFloat("activationThreshold", settings.activationThreshold);
     newRow.setFloat("amplitude", consolidatedStats.amplitude);
     newRow.setFloat("width", consolidatedStats.width);

@@ -29,7 +29,7 @@ class FittsInstance {
 
   public void update(long frameTimeMillis, HashMap<Action, Float> readings) {
     float speed = readings.get(Action.RIGHT) - readings.get(Action.LEFT);
-    float newX = state.relativeCursorX + speed*(frameTimeMillis/settings.travelTimeMillis);
+    float newX = state.relativeCursorX + speed*(((float)frameTimeMillis)/settings.travelTimeMillis);
     newX = max(-1.0, newX);
     newX = min(newX, 1.0);
 

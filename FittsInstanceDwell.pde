@@ -33,7 +33,7 @@ class FittsInstanceDwell extends FittsInstance {
       rectMode(CENTER);
       stroke(componentColors.get(FittsComponent.TARGET_ACQUIRED).getRGB());
       fill(componentColors.get(FittsComponent.TARGET_ACQUIRED).getRGB());
-      float percentComplete = min(1.0, currentDwellTimeMillis/settings.dwellTimeMillis);
+      float percentComplete = min(1.0, ((float)currentDwellTimeMillis)/settings.dwellTimeMillis);
       rect(targetX, centerY, targetWidth, percentComplete*absoluteHeight, cornerRadius);
     }
   }
