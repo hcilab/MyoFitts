@@ -2,10 +2,10 @@
   "calibrationFile": "calibration.csv",
   "emgFile": "emg.csv",
 
-  "inputFile": "input/test-2dof.csv",
+  "inputFile": "input/test-1dof.csv",
   "statisticsFile": "data/log.csv",
   "stateFile": "data/states.csv",
-  "dof": 2,
+  "dof": 1,
 
   "controlPolicy": "maximum",
   "timeBetweenImpulseMillis": 500,
