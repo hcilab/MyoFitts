@@ -12,6 +12,7 @@ class Settings {
   public Policy controlPolicy;
   public float activationThreshold;
   public float timeBetweenImpulseMillis;
+  public long countdownTimeMillis;
 
   // fitts related
   public float travelTimeMillis;
@@ -30,6 +31,7 @@ class Settings {
     controlPolicy = parseControlPolicy(s.getString("controlPolicy"));
     activationThreshold = s.getFloat("activationThreshold");
     timeBetweenImpulseMillis = s.getFloat("timeBetweenImpulseMillis");
+    countdownTimeMillis = s.getLong("countdownTimeMillis");
 
     travelTimeMillis = s.getFloat("travelTimeMillis");
     dwellTimeMillis = s.getFloat("dwellTimeMillis");

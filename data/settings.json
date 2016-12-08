@@ -8,6 +8,7 @@
   "controlPolicy": "maximum",
   "activationThreshold": 0.15,
   "timeBetweenImpulseMillis": 500.0,
+  "countdownTimeMillis": 1000,
 
   "travelTimeMillis": 1000.0,
   "dwellTimeMillis": 1000.0,

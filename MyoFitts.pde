@@ -4,6 +4,7 @@ HashMap<FittsComponent, Color> BACKGROUND_COLORS;
 Settings settings;
 InstanceManager instanceManager;
 GameManager gameManager;
+CountdownManager countdownManager;
 long lastFrameTimestamp;
 
 
@@ -16,6 +17,8 @@ void setup() {
 
   initializeGameManagerOrDie();
   initializeInstanceManagerOrDie();
+
+  countdownManager = new CountdownManager(settings.countdownTimeMillis);
 
   // load initial instance
   if (instanceManager.hasNext())
@@ -34,14 +37,21 @@ void draw() {
 
   if (gameManager.isAcquired()) {
     gameManager.log();
-    if (instanceManager.hasNext())
+    if (instanceManager.hasNext()) {
       gameManager.setInstance(instanceManager.getNext());
-    else
+      countdownManager.reset();
+    } else {
       exit();
+    }
   }
 
-  gameManager.update(frameTimeMillis);
+
+  countdownManager.update(frameTimeMillis);
+  if (countdownManager.isDone())
+    gameManager.update(frameTimeMillis);
+
   gameManager.draw();
+  countdownManager.draw();
 }
 
 
