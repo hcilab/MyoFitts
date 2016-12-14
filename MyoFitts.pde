@@ -59,14 +59,14 @@ private void initializeColors() {
   ACTIVE_COLORS = new HashMap<FittsComponent, Color>();
   ACTIVE_COLORS.put(FittsComponent.CURSOR, new Color(0, 0, 255));
   ACTIVE_COLORS.put(FittsComponent.CROSSHAIR, new Color(255, 255, 255));
-  ACTIVE_COLORS.put(FittsComponent.TARGET_FREE, new Color(255, 0, 0));
+  ACTIVE_COLORS.put(FittsComponent.TARGET_FREE, new Color(255, 0, 255));
   ACTIVE_COLORS.put(FittsComponent.TARGET_ACQUIRED, new Color(0, 255, 0));
   ACTIVE_COLORS.put(FittsComponent.BACKGROUND, new Color(128, 128, 128));
 
   BACKGROUND_COLORS = new HashMap<FittsComponent, Color>();
   BACKGROUND_COLORS.put(FittsComponent.CURSOR, new Color(153, 153, 255));
   BACKGROUND_COLORS.put(FittsComponent.CROSSHAIR, new Color(255, 255, 255));
-  BACKGROUND_COLORS.put(FittsComponent.TARGET_FREE, new Color(255, 153, 153));
+  BACKGROUND_COLORS.put(FittsComponent.TARGET_FREE, new Color(255, 153, 255));
   BACKGROUND_COLORS.put(FittsComponent.TARGET_ACQUIRED, new Color(153, 255, 153));
   BACKGROUND_COLORS.put(FittsComponent.BACKGROUND, new Color(224, 224, 224));
 }
