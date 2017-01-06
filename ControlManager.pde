@@ -15,6 +15,8 @@ class ControlManager {
     for (Action a : new Action[] {Action.LEFT, Action.RIGHT}) {
       if (readings.get(a) < settings.activationThreshold)
         readings.put(a, 0.0);
+      else
+        readings.put(a, scale(readings.get(a)));
     }
 
     // allow a single impulse to occur per `timeBetweenImpulseMillis` 
@@ -24,5 +26,10 @@ class ControlManager {
       readings.put(Action.IMPULSE, 0.0);
 
     return readings;
+  }
+
+  private float scale(float reading) {
+    // scale the reading so that the remaining range of input (i.e., above the activationThreshold) results in the full range of movement speeds
+    return (reading-settings.activationThreshold) * (1.0/(1.0-settings.activationThreshold));
   }
 }
