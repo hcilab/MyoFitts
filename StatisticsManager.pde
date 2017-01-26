@@ -26,7 +26,7 @@ class StatisticsManager {
       statisticsTable.addColumn("elapsedTimeMillis");
       statisticsTable.addColumn("distanceTravelled");
       statisticsTable.addColumn("errors");
-      statisticsTable.addColumn("overShoots");
+      statisticsTable.addColumn("overshoots");
     }
 
     saveTable(statisticsTable, settings.statisticsFile);
@@ -87,7 +87,7 @@ class StatisticsManager {
     newRow.setLong("elapsedTimeMillis", consolidatedStats.elapsedTimeMillis);
     newRow.setFloat("distanceTravelled", consolidatedStats.distanceTravelled);
     newRow.setInt("errors", consolidatedStats.errors);
-    newRow.setInt("overShoots", consolidatedStats.overShoots);
+    newRow.setInt("overshoots", consolidatedStats.overShoots);
 
     saveTable(statisticsTable, settings.statisticsFile);
   }
