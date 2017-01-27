@@ -7,8 +7,8 @@ class FittsInstanceDwell extends FittsInstance {
   }
 
 
-  public void update(long frameTimeMillis, HashMap<Action, Float> readings) {
-    super.update(frameTimeMillis, readings);
+  public void update(long frameTimeMillis, HashMap<Action, Float> readings, HashMap<Action, Float> rawReadings) {
+    super.update(frameTimeMillis, readings, rawReadings);
     if (state.isCursorInTarget())
       currentDwellTimeMillis += frameTimeMillis;
     else

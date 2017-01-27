@@ -27,7 +27,7 @@ class FittsInstance {
     state = new FittsState(System.currentTimeMillis(), 0.0, relativeTargetX, relativeTargetWidth);
   }
 
-  public void update(long frameTimeMillis, HashMap<Action, Float> readings) {
+  public void update(long frameTimeMillis, HashMap<Action, Float> readings, HashMap<Action, Float> rawReadings) {
     float speed = readings.get(Action.RIGHT) - readings.get(Action.LEFT);
     float newX = state.relativeCursorX + speed*(((float)frameTimeMillis)/settings.travelTimeMillis);
     newX = max(-1.0, newX);
@@ -36,6 +36,8 @@ class FittsInstance {
     state = state.clone();
     state.tod += frameTimeMillis;
     state.relativeCursorX = newX;
+    state.emgLeft = rawReadings.get(Action.LEFT);
+    state.emgRight = rawReadings.get(Action.RIGHT);
   }
 
   public FittsState getState() {

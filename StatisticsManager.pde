@@ -43,6 +43,8 @@ class StatisticsManager {
       statesTable.addColumn("cursorX");
       statesTable.addColumn("targetX");
       statesTable.addColumn("targetWidth");
+      statesTable.addColumn("emgLeft");
+      statesTable.addColumn("emgRight");
     }
 
     saveTable(statesTable, settings.stateFile);
@@ -109,6 +111,8 @@ class StatisticsManager {
         newRow.setFloat("cursorX", state.relativeCursorX);
         newRow.setFloat("targetX", state.relativeTargetX);
         newRow.setFloat("targetWidth", state.relativeTargetWidth);
+        newRow.setFloat("emgLeft", state.emgLeft);
+        newRow.setFloat("emgRight", state.emgRight);
       }
     }
 

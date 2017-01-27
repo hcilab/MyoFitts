@@ -26,6 +26,7 @@ class GameManager {
 
   public void update(long frameTimeMillis) {
     HashMap<Action, Float> realReadings = controlManager.poll();
+    HashMap<Action, Float> rawReadings = controlManager.pollRaw();
 
     HashMap<Action, Float> nullReadings = new HashMap<Action, Float>();
     nullReadings.put(Action.LEFT, 0.0);
@@ -34,9 +35,9 @@ class GameManager {
 
     for (int i=0; i<instance.size(); i++) {
       if (i == currentInstanceIndex)
-        instance.get(i).update(frameTimeMillis, realReadings);
+        instance.get(i).update(frameTimeMillis, realReadings, rawReadings);
       else
-        instance.get(i).update(frameTimeMillis, nullReadings);
+        instance.get(i).update(frameTimeMillis, nullReadings, nullReadings);
     }
 
     if (realReadings.get(Action.IMPULSE) > 0.0)
