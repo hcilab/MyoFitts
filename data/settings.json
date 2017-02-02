@@ -7,7 +7,7 @@
   "stateFile": "data/states.csv",
   "dof": 1,
 
-  "controlPolicy": "maximum",
+  "controlPolicy": "difference",
   "timeBetweenImpulseMillis": 500,
   "countdownTimeMillis": 1000,
 
