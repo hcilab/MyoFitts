@@ -1,5 +1,7 @@
 {
   "calibrationFile": "calibration.csv",
+  "emgFile": "emg.csv",
+
   "inputFile": "input/simple.csv",
   "statisticsFile": "data/log.csv",
   "stateFile": "data/states.csv",

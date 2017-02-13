@@ -58,5 +58,6 @@ class GameManager {
     statisticsManager.logStatistics();
     statisticsManager.logStates();
     statisticsManager.clear();
+    controlManager.flushEmgLog();
   }
 }

@@ -6,6 +6,7 @@ class Settings {
   public String inputFile; 
   public String statisticsFile;
   public String stateFile;
+  public String emgFile;
   public int dof;
 
   // control related
@@ -26,6 +27,7 @@ class Settings {
     inputFile = s.getString("inputFile");
     statisticsFile = s.getString("statisticsFile");
     stateFile = s.getString("stateFile");
+    emgFile = s.getString("emgFile");
     dof = s.getInt("dof");
 
     controlPolicy = parseControlPolicy(s.getString("controlPolicy"));

@@ -5,6 +5,7 @@ class ControlManager {
   public ControlManager(PApplet mainObject) throws MyoNotDetectectedError, CalibrationFailedException {
     myoProportional = new LibMyoProportional(mainObject);
     myoProportional.loadCalibrationSettings(settings.calibrationFile);
+    myoProportional.enableEmgLogging(settings.emgFile);
     lastImpulseTime = 0;
   }
 
@@ -26,6 +27,11 @@ class ControlManager {
       readings.put(Action.IMPULSE, 0.0);
 
     return readings;
+  }
+
+  // TODO leaky interface
+  public void flushEmgLog() {
+    myoProportional.flushEmgLog();
   }
 
   private float scale(float reading) {
