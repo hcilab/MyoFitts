@@ -28,12 +28,6 @@ class ControlManager {
     return readings;
   }
 
-  // Intended for logging purposes only. This method bypasses both the
-  // controlPolicy and activationThreshold specified in settings.
-  public HashMap<Action, Float> pollRaw() {
-    return myoProportional.poll(Policy.RAW);
-  }
-
   private float scale(float reading) {
     // scale the reading so that the remaining range of input (i.e., above the activationThreshold) results in the full range of movement speeds
     return (reading-settings.activationThreshold) * (1.0/(1.0-settings.activationThreshold));
