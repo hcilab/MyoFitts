@@ -6,4 +6,4 @@ A configurable N-dimensional Fitts Law test using the Myo armband for proportion
 
 Currently using:
 
-  - v1.1 of MyoProportional project (https://github.com/hcilab/MyoProportional)
+  - v2.0 of MyoProportional project (https://github.com/hcilab/MyoProportional)
