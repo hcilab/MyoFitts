@@ -8,7 +8,6 @@
   "dof": 2,
 
   "controlPolicy": "maximum",
-  "activationThreshold": 0.15,
   "timeBetweenImpulseMillis": 500,
   "countdownTimeMillis": 1000,
 

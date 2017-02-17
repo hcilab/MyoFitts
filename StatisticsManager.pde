@@ -21,7 +21,6 @@ class StatisticsManager {
       statisticsTable.addColumn("acquisitionPolicy");
       statisticsTable.addColumn("dwellTimeMillis");
       statisticsTable.addColumn("travelTimeMillis");
-      statisticsTable.addColumn("activationThreshold");
       statisticsTable.addColumn("amplitude");
       statisticsTable.addColumn("width");
       statisticsTable.addColumn("elapsedTimeMillis");
@@ -83,7 +82,6 @@ class StatisticsManager {
     newRow.setString("acquisitionPolicy", settings.acquisitionPolicy == AcquisitionPolicy.DWELL ? "dwell" : "impulse");
     newRow.setLong("dwellTimeMillis", settings.dwellTimeMillis);
     newRow.setLong("travelTimeMillis", settings.travelTimeMillis);
-    newRow.setFloat("activationThreshold", settings.activationThreshold);
     newRow.setFloat("amplitude", consolidatedStats.amplitude);
     newRow.setFloat("width", consolidatedStats.width);
     newRow.setLong("elapsedTimeMillis", consolidatedStats.elapsedTimeMillis);

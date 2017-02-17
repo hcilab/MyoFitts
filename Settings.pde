@@ -11,7 +11,6 @@ class Settings {
 
   // control related
   public Policy controlPolicy;
-  public float activationThreshold;
   public long timeBetweenImpulseMillis;
   public long countdownTimeMillis;
 
@@ -31,7 +30,6 @@ class Settings {
     dof = s.getInt("dof");
 
     controlPolicy = parseControlPolicy(s.getString("controlPolicy"));
-    activationThreshold = s.getFloat("activationThreshold");
     timeBetweenImpulseMillis = s.getLong("timeBetweenImpulseMillis");
     countdownTimeMillis = s.getLong("countdownTimeMillis");
 
