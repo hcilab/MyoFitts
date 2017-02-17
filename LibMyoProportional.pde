@@ -23,6 +23,7 @@ private LibMyoBuffer getMyoBufferSingleton(PApplet mainObject) throws MyoNotDete
 class LibMyoProportional {
   private final float IMPULSE_THRESHOLD = 0.8;
   private final float FIRST_OVER_THRESHOLD = 0.5;
+  private final float DEFAULT_MAT = 0.10;
 
   private LibMyoBuffer myoBuffer;
   private Map<Action, SensorConfig> registeredSensors;
@@ -58,13 +59,16 @@ class LibMyoProportional {
     newSettings.setInt("timestamp", int(System.currentTimeMillis()));
     newSettings.setInt("left_sensor", registeredSensors.get(Action.LEFT).sensorID);
     newSettings.setFloat("left_reading", registeredSensors.get(Action.LEFT).maxReading);
+    newSettings.setFloat("left_mat", registeredSensors.get(Action.LEFT).minimumActivationThreshold);
     newSettings.setInt("right_sensor", registeredSensors.get(Action.RIGHT).sensorID);
     newSettings.setFloat("right_reading", registeredSensors.get(Action.RIGHT).maxReading);
+    newSettings.setFloat("right_mat", registeredSensors.get(Action.RIGHT).minimumActivationThreshold);
 
     saveTable(calibrationTable, "data/" + calibrationFilename);
   }
 
   public void loadCalibrationSettings(String calibrationFilename) throws CalibrationFailedException {
+    // TODO gracefully handle FileNotFound exception
     Table calibrationTable = loadTable(calibrationFilename, "header");
     TableRow calibrationSettings = calibrationTable.getRow(calibrationTable.getRowCount()-1);
 
@@ -72,12 +76,6 @@ class LibMyoProportional {
     int rightSensorID = calibrationSettings.getInt("right_sensor");
     float leftSensorMaxReading = calibrationSettings.getFloat("left_reading");
     float rightSensorMaxReading = calibrationSettings.getFloat("right_reading");
-
-    // normalize reading for backwards compatability (previous calibration tools saved the reading in range [0, 127])
-    if (leftSensorMaxReading > 1.0 || rightSensorMaxReading > 1.0) {
-      leftSensorMaxReading /= 127;
-      rightSensorMaxReading /= 127;
-    }
 
     registerAction(Action.LEFT, leftSensorID, leftSensorMaxReading);
     registerAction(Action.RIGHT, rightSensorID, rightSensorMaxReading);
@@ -106,10 +104,10 @@ class LibMyoProportional {
   }
 
   public SensorConfig registerAction(Action action, int sensorID, float sensorReading) throws CalibrationFailedException {
-    if (!isValidCalibration(sensorID, sensorReading))
+    if (!isValidCalibration(sensorID, sensorReading, DEFAULT_MAT))
       throw new CalibrationFailedException();
 
-    SensorConfig s = new SensorConfig(sensorID, sensorReading);
+    SensorConfig s = new SensorConfig(sensorID, sensorReading, DEFAULT_MAT);
     registeredSensors.put(action, s);
     return s;
   }
@@ -129,6 +127,7 @@ class LibMyoProportional {
   public HashMap<Action, Float> poll(Policy policy) {
     assert(isCalibrated());
 
+    // Step 1. acquire "raw" readings, calculating impulse before any further processing
     float[] readings = myoBuffer.poll();
     float left = readings[registeredSensors.get(Action.LEFT).sensorID] / registeredSensors.get(Action.LEFT).maxReading;
     float right = readings[registeredSensors.get(Action.RIGHT).sensorID] / registeredSensors.get(Action.RIGHT).maxReading;
@@ -137,6 +136,13 @@ class LibMyoProportional {
     if (loggingEnabled)
       emgReadings.add(new EmgReading(System.currentTimeMillis(), left, right, impulse));
 
+    // Step 2. scale readings according to minimum activation threshold settings
+    if (policy != Policy.RAW) {
+      left = scale(left, registeredSensors.get(Action.LEFT).minimumActivationThreshold);
+      right = scale(right, registeredSensors.get(Action.RIGHT).minimumActivationThreshold);
+    }
+
+    // Step 3. transform according to specified control policy
     switch (policy) {
       case RAW:
         break;
@@ -187,6 +193,13 @@ class LibMyoProportional {
   public void setSensitivity(Action action, float value) {
     SensorConfig s = registeredSensors.get(action);
     s.maxReading = value;
+    assert(isValidCalibration(s));
+  }
+
+  public void setMinimumActivationThreshold(Action action, float value) {
+    SensorConfig s = registeredSensors.get(action);
+    s.minimumActivationThreshold = value;
+    assert(isValidCalibration(s));
   }
 
   // The LibMyoProportional object can be configured to log all EMG data (one
@@ -225,8 +238,18 @@ class LibMyoProportional {
     logfile = "";
   }
 
-  private boolean isValidCalibration(int sensorID, float sensorReading) {
-    return sensorID >= 0 && sensorID < myoBuffer.NUM_SENSORS && sensorReading >= 0.0 && sensorReading <= 1.0;
+  private boolean isValidCalibration(SensorConfig s) {
+    return isValidCalibration(s.sensorID, s.maxReading, s.minimumActivationThreshold);
+  }
+
+  private boolean isValidCalibration(int sensorID, float sensorReading, float mat) {
+    return sensorID >= 0 && sensorID < myoBuffer.NUM_SENSORS && sensorReading >= 0.0 && sensorReading <= 1.0 && mat >= 0.0 && mat <= 1.0;
+  }
+
+  private float scale(float reading, float minimumActivationThreshold) {
+    // scale the reading so that the remaining range of input (i.e., above the activationThreshold) results in the full range of movement speeds
+    float scaledReading = (reading-minimumActivationThreshold) * (1.0/(1.0-minimumActivationThreshold));
+    return max(scaledReading, 0.0);
   }
 
   private Table initializeCalibrationTable() {
@@ -234,8 +257,10 @@ class LibMyoProportional {
     calibrationTable.addColumn("timestamp");
     calibrationTable.addColumn("left_sensor");
     calibrationTable.addColumn("left_reading");
+    calibrationTable.addColumn("left_mat");
     calibrationTable.addColumn("right_sensor");
     calibrationTable.addColumn("right_reading");
+    calibrationTable.addColumn("right_mat");
     return calibrationTable;
   }
 
@@ -258,10 +283,12 @@ class LibMyoProportional {
 class SensorConfig {
   public int sensorID;
   public float maxReading;
+  public float minimumActivationThreshold;
 
-  SensorConfig(int id, float maxReading) {
+  SensorConfig(int id, float maxReading, float minimumActivationThreshold) {
     this.sensorID = id;
     this.maxReading = maxReading;
+    this.minimumActivationThreshold = minimumActivationThreshold;
   }
 }
 
