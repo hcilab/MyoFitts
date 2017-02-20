@@ -5,7 +5,7 @@
   "inputFile": "input/input.csv",
   "statisticsFile": "data/log.csv",
   "stateFile": "data/states.csv",
-  "dof": 1,
+  "dof": 2,
 
   "controlPolicy": "difference",
   "timeBetweenImpulseMillis": 500,
