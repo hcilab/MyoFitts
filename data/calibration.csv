@@ -1,2 +1,2 @@
-timestamp,left_sensor,left_reading,right_sensor,right_reading
-2147483647,3,0.13464567,7,0.5215223
+timestamp,left_sensor,left_reading,left_mat,right_sensor,right_reading,right_mat
+2147483647,3,0.15,0.13464567,7,0.5215223,0.15

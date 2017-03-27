@@ -1,4 +1,5 @@
 import java.util.Map;
+import java.io.FileWriter;
 
 enum Action {LEFT, RIGHT, IMPULSE};
 enum Policy {RAW, MAXIMUM, DIFFERENCE, FIRST_OVER};
@@ -76,9 +77,14 @@ class LibMyoProportional {
     int rightSensorID = calibrationSettings.getInt("right_sensor");
     float leftSensorMaxReading = calibrationSettings.getFloat("left_reading");
     float rightSensorMaxReading = calibrationSettings.getFloat("right_reading");
+    float leftMinimumActivationThreshold = calibrationSettings.getFloat("left_mat");
+    float rightMinimumActivationThreshold = calibrationSettings.getFloat("right_mat");
 
     registerAction(Action.LEFT, leftSensorID, leftSensorMaxReading);
     registerAction(Action.RIGHT, rightSensorID, rightSensorMaxReading);
+
+    setMinimumActivationThreshold(Action.LEFT, leftMinimumActivationThreshold);
+    setMinimumActivationThreshold(Action.RIGHT, rightMinimumActivationThreshold);
   }
 
   public SensorConfig registerAction(Action action) throws CalibrationFailedException {
@@ -215,22 +221,20 @@ class LibMyoProportional {
   // performance hit. Instead, the EMG log is buffered, and persisted on demand
   // by calling this method.
   public void flushEmgLog() {
-    Table emgTable;
-    if (!fileExists(logfile))
-      emgTable = initializeEmgTable();
-    else
-      emgTable = loadTable(logfile, "header");
+    if (loggingEnabled) {
+      String emgString = "";
+      for (EmgReading emgReading : emgReadings)
+        emgString += emgReading.tod + "," + emgReading.left + "," + emgReading.right + "," + emgReading.impulse + "\n";
 
-    for (EmgReading emgReading : emgReadings) {
-      TableRow row = emgTable.addRow();
-      row.setLong("tod", emgReading.tod);
-      row.setFloat("left", emgReading.left);
-      row.setFloat("right", emgReading.right);
-      row.setFloat("impulse", emgReading.impulse);
+      try {
+        FileWriter writer = new FileWriter("data/" + logfile, true); // open for append-only
+        writer.write(emgString);
+        writer.close();
+      } catch (IOException e) {
+        println("[Warning] Could not log EMG data to file: " + logfile + ".");
+      }
+      emgReadings.clear();
     }
-
-    saveTable(emgTable, "data/" + logfile);
-    emgReadings.clear();
   }
 
   public void disableEmgLogging() {
@@ -262,15 +266,6 @@ class LibMyoProportional {
     calibrationTable.addColumn("right_reading");
     calibrationTable.addColumn("right_mat");
     return calibrationTable;
-  }
-
-  private Table initializeEmgTable() {
-    Table emgTable = new Table();
-    emgTable.addColumn("tod");
-    emgTable.addColumn("left");
-    emgTable.addColumn("right");
-    emgTable.addColumn("impulse");
-    return emgTable;
   }
 
   private boolean fileExists(String filename) {
