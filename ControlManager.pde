@@ -5,7 +5,7 @@ class ControlManager {
   public ControlManager(PApplet mainObject) throws MyoNotDetectectedError, CalibrationFailedException {
     myoProportional = new LibMyoProportional(mainObject);
     myoProportional.loadCalibrationSettings(settings.calibrationFile);
-    myoProportional.enableEmgLogging(settings.emgFile);
+    myoProportional.enableEmgLogging(sketchPath() + "/data/" + settings.emgFile);
     lastImpulseTime = 0;
   }
 
